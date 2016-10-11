@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop>
+
+  <introduction-pointcut class="aop.jboss.Order">
+    <mixin>
+	  <interfaces> aop.jboss.CalendarItf </interfaces>
+	  <class> aop.jboss.Calendar </class>
+	  <construction> new aop.jboss.Calendar(this) </construction>
+	</mixin>
+  </introduction-pointcut>
+
+  <interceptor-pointcut class="aop.jboss.Order"
+		methodFilter="ALL"
+		constructorFilter="NONE"
+		fieldFilter="NONE" >
+
+    <interceptors>
+      <interceptor class="aop.jboss.CalendarInterceptor"/>
+    </interceptors>
+  </interceptor-pointcut>
+
+</aop>

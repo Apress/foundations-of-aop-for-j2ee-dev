@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Created-By: 1.4.2 (Sun Microsystems Inc.)
+Main-Class: aop.j2ee.client.TestClient
+Class-Path: log4j-1.2.8.jar appserv-ext.jar aopj2ee-commons.jar aopj2ee-delegates.jar
+
+
+
+

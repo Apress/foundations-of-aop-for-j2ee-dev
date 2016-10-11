@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="var" path="LOG4J_JAR"/>
+    <classpathentry kind="src" path="/applicationclientutils"/>
+    <classpathentry kind="src" path="/commons"/>
+    <classpathentry kind="src" path="/businessdelegates"/>
+    <classpathentry kind="lib" path="C:/AppServer7/lib/appserv-ext.jar"/>
+    <classpathentry kind="lib" path="C:/AppServer7/lib/appserv-rt.jar"/>
+    <classpathentry kind="src" path="/ejbcomponents"/>
+    <classpathentry kind="lib" path="C:/Documents and Settings/pawlakr/eclipse/plugins/org.aspectj.ajde_1.1.3/aspectjrt.jar"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,4 @@
+src/aop/aspectj/Catalog.java
+src/aop/aspectj/Customer.java
+src/aop/aspectj/Order.java
+src/aop/aspectj/TraceAspect2.aj

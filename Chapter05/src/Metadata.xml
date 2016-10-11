@@ -1,0 +1,14 @@
+<aop>
+	<interceptor-pointcut class="aop.jboss.Order" fieldFilter="NONE" constructorFilter="NONE" >
+		<interceptors>
+			<interceptor class="aop.jboss.MetadataInterceptor" />
+		</interceptors>
+	</interceptor-pointcut>
+	
+	<class-metadata group="toBeTraced" class="aop.jboss.Order">
+		<method name="addItem.*">
+			<tracedMethod>true</tracedMethod>
+		</method>
+	</class-metadata>
+	
+</aop>

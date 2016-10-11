@@ -1,0 +1,16 @@
+// ------------------------------------------------------------
+// - La programmation orientee aspect pour Java/J2EE          -
+// - Renaud Pawlak, Jean-Philippe Retaille, Lionel Seinturier -
+// - Editions Eyrolles                                        -
+// -                                                          -
+// - Partie II  : Les outils de la POA                        -
+// - Chapitre 4 : JAC                                         -
+// ------------------------------------------------------------
+
+// -------------------------------------------------
+// - Application: Gestion de commandes             -
+// - Aspect:      Trace de la methode addItem      -
+// - Fichier de configuration de l'aspect de trace -
+// -------------------------------------------------
+
+// Pas de configuration dans ce cas

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop>
+
+  <interceptor-pointcut class="aop.jboss.Order"
+		methodFilter="ALL"
+		constructorFilter="NONE"
+		fieldFilter="NONE" >
+
+    <interceptors>
+      <interceptor class="aop.jboss.TraceInterceptor"/>
+    </interceptors>
+  </interceptor-pointcut>
+
+</aop>

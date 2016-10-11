@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop>
+   <interceptor-pointcut methodFilter="ALL" constructorFilter="NONE" fieldFilter="NONE" class="aop.contracts.preconditions.PreConditionExample">
+      <interceptors>
+         <interceptor class="aop.contracts.preconditions.PreConditionInterceptor"/>
+      </interceptors>
+   </interceptor-pointcut>
+  
+   <interceptor-pointcut methodFilter="ALL" constructorFilter="NONE" fieldFilter="NONE" class="aop.contracts.postconditions.PostConditionExample1">
+      <interceptors>
+         <interceptor class="aop.contracts.postconditions.PostConditionInterceptor1"/>
+      </interceptors>
+   </interceptor-pointcut>
+
+   <interceptor-pointcut methodFilter="ALL" constructorFilter="NONE" fieldFilter="NONE" class="aop.contracts.postconditions.PostConditionExample2">
+      <interceptors>
+         <interceptor class="aop.contracts.postconditions.PostConditionInterceptor2"/>
+      </interceptors>
+   </interceptor-pointcut>
+
+   <interceptor-pointcut methodFilter="ALL" constructorFilter="ALL" fieldFilter="ALL" group="cover">
+      <interceptors>
+         <interceptor class="aop.tests.cover.CoverRecorderInterceptor" singleton="true">
+         	<record-file value="d:\\temp\\recordcover.csv" />
+         </interceptor>
+      </interceptors>
+   </interceptor-pointcut>
+   
+   <class-metadata group="cover" class="aop.tests.cover.CoverExample">
+      <default>
+      	<filter>false</filter>
+      </default>
+      <method name="main">
+        <filter>true</filter>
+      </method>
+   </class-metadata>
+   
+   <interceptor-pointcut methodFilter="ALL" constructorFilter="NONE" fieldFilter="NONE" group="regression">
+      <interceptors>
+         <interceptor class="aop.tests.regression.RegressionRecorderInterceptor" singleton="true">
+         	<record-file value="d:\\temp\\recordreg.csv" />
+         	<version value="2" />
+         </interceptor>
+      </interceptors>
+   </interceptor-pointcut>
+   
+   <class-metadata group="regression" class="aop.tests.regression.RegressionExample">
+      <default>
+      	<filter>false</filter>
+      </default>
+   </class-metadata>
+   
+   <interceptor-pointcut methodFilter="NONE" constructorFilter="ALL" fieldFilter="NONE" class="aop.management.jmx.mixin.Stats">
+     <interceptors>
+       <interceptor class="aop.management.jmx.mixin.StatsMBeanInterceptor"/>
+     </interceptors>
+   </interceptor-pointcut>
+
+  <introduction-pointcut class="aop.management.jmx.mixin.Stats">
+      <mixin>
+         <interfaces>aop.management.jmx.mixin.StatsMBean</interfaces>
+         <class>aop.management.jmx.mixin.StatsMBeanMixin</class>
+         <construction>new aop.management.jmx.mixin.StatsMBeanMixin(this)</construction>
+      </mixin>
+   </introduction-pointcut>
+   
+   <interceptor-pointcut methodFilter="NONE" constructorFilter="ALL" fieldFilter="NONE" class="aop.management.jmx.simple.Stats">
+     <interceptors>
+       <interceptor class="aop.management.jmx.simple.StatsMBeanInterceptor"/>
+     </interceptors>
+   </interceptor-pointcut>
+
+  <introduction-pointcut class="aop.management.jmx.simple.Stats">
+	 <interfaces>aop.management.jmx.simple.StatsMBean</interfaces>
+   </introduction-pointcut>
+   
+   <interceptor-pointcut methodFilter="NONE" constructorFilter="ALL" fieldFilter="NONE" class="aop.patterns.singleton.Stats">
+     <interceptors>
+       <interceptor class="aop.patterns.singleton.SingletonInterceptor"/>
+     </interceptors>
+   </interceptor-pointcut>
+</aop>

@@ -1,0 +1,357 @@
+<project name="aopj2ee_casestudy" default="compile" basedir=".">
+
+<!-- server.name = <aopj2ee_base>/aopj2ee -->
+<!-- basedir = <aopj2ee>/ejbcomponents -->
+
+<!-- ===================== Property Definitions =========================== -->
+<property file="SunONE.properties"/>
+
+<!-- ==================== File and Directory Names ======================== -->
+
+<property name="app.path"      					value="/${app.name}"/>
+<property name="build.home"    					value="${server.name}"/>
+<property name="src.home"      					value="${basedir}"/>
+<property name="ear.home" 						value="${build.home}/ear"/>
+<property name="clientjar.home" 				value="${build.home}/client"/>
+<property name="dist.home"     					value="${build.home}/dist"/>
+<property name="commons.home"					value="../commons"/>
+<property name="businessutils.home"				value="../businessutils"/>
+<property name="businesscomponents.home"		value="../businesscomponents"/>
+<property name="businessdelegates.home"			value="../businessdelegates"/>
+<property name="applicationclientutils.home" 	value="../applicationclientutils"/>
+<property name="applicationclient.home"			value="../applicationclient"/>
+<property name="commonsjar.file" 				value="${app.name}-commons.jar"/>
+<property name="businessutilsjar.file" 			value="${app.name}-utils.jar"/>
+<property name="businesscomponentsjar.file" 	value="${app.name}-components.jar"/>
+<property name="ejbcomponentsjar.file" 	value="${app.name}-ejbcomponents.jar"/>
+<property name="businessdelegatesjar.file" 		value="${app.name}-delegates.jar"/>
+<property name="ejbmanifest.file" 				value="MANIFEST.MF"/>
+<property name="clientmanifest.file" 			value="${applicationclient.home}/MANIFEST.MF"/>
+<property name="ejbjar.file" 					value="${app.name}-ejb.jar"/>
+<property name="applicationclientjar.file" 		value="${app.name}-client.jar"/>
+<property name="ear.file"						value="${app.name}.ear"/>
+<property name="aspectj.jar"						value="/aspectj1.1/lib/aspectjrt.jar"/>
+
+<!--  ==================== Compilation Control Options ==================== -->
+<property name="compile.debug"       value="true"/>
+<property name="compile.deprecation" value="false"/>
+<property name="compile.optimize"    value="true"/>
+
+<!--  ==================== AspectJ Task =================================== -->
+<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+<classpath>
+	<pathelement location="${aspectjrt.jar}" /> 
+</classpath>
+</taskdef>
+
+<!-- ==================== Compilation Classpath =========================== -->
+<path id="default.classpath">
+
+	<!-- Include all THIRD PARTY application JARS -->
+	<pathelement location="${log4jjar.file}"/> 
+	
+	<!-- Include all elements that Sun ONE App Server exposes to applications -->
+	<pathelement location="${appserver.home}/lib"/>
+	<fileset dir="${appserver.home}/lib">
+    		<include name="*.jar"/>
+	</fileset>
+   
+   	<!-- Include all elements that are shared across all applications within a Sun ONE App Server instance -->
+	<fileset dir="${common.home}">
+      		<include name="*.jar"/>
+	</fileset>
+
+</path>
+
+<!-- ==================== Clean Target ==================================== -->
+<target name="clean" description="Delete old build and dist directories"> 
+	<delete dir="${build.home}"/>
+	<delete file="${jar.home}/${commonsjar.file}"/>
+	<delete file="${jar.home}/${businessutilsjar.file}"/>
+	<delete file="${jar.home}/${businesscomponentsjar.file}"/>	
+	<delete file="${jar.home}/${businessdelegatesjar.file}"/>	
+</target>
+
+<!-- ==================== Prepare Target ================================== -->
+<target name="prepare">
+
+	<!-- Create build directories as needed -->
+	<mkdir  dir="${build.home}"/>
+   	<mkdir  dir="${ear.home}"/>
+   	<mkdir  dir="${ear.home}/META-INF"/>
+   	<mkdir  dir="${clientjar.home}"/>
+	<mkdir  dir="${dist.home}"/>
+   	<mkdir  dir="${dist.home}/lib"/>
+</target>
+
+<!-- ==================== Target to compile Project Commons and generate the JAR =============== -->
+<target name="distCommons" depends="prepare" description="Compile Java sources for Project Commons">
+
+	<!-- Compile Java classes as necessary -->
+	<iajc 	srcdir		="${commons.home}"
+	       	destdir		="${commons.home}/bin"
+			debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}"
+	>
+		<classpath>
+			<path  refid="default.classpath"/>
+			<pathelement location="${aspectj.jar}"/>
+		</classpath>
+	</iajc>
+
+	<!-- Create utils jar file -->
+    <jar jarfile="${jar.home}/${commonsjar.file}" basedir="${commons.home}/bin"/>
+	
+</target>
+
+<!-- =============== Target to compile Project BusinessUtils and generate the JAR ================== -->
+<target name="distBusinessUtils" depends="prepare,distCommons" description="Compile Java sources for Business Utilities">
+
+	<!-- Compile Java classes as necessary -->
+	<iajc 	srcdir		="${businessutils.home}/src"
+          	destdir		="${businessutils.home}/bin"
+			debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+		
+		<classpath>
+			<path  refid="default.classpath"/>
+			<pathelement location="${jar.home}/${commonsjar.file}"/>
+			<pathelement location="${aspectj.jar}"/>
+		</classpath>
+	</iajc>
+
+	<!-- Create business utils jar file -->
+   	<jar jarfile="${jar.home}/${businessutilsjar.file}" basedir="${businessutils.home}/bin"/>
+	
+</target>
+
+<!-- =========== Target to compile Project BusinessComponents and generate the JAR ========== -->
+<target name="distBusinessComponents" depends="prepare,distCommons,distBusinessUtils" description="Compile Java sources for Business Components">
+
+	<!-- Compile Java classes as necessary -->
+	<iajc 	srcdir		="${businesscomponents.home}/src"
+          	destdir		="${businesscomponents.home}/bin"
+			debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+		<classpath>
+		    <path  refid="default.classpath"/>
+		    <pathelement location="${jar.home}/${commonsjar.file}"/>
+		    <pathelement location="${jar.home}/${businessutilsjar.file}"/>
+			<pathelement location="${aspectj.jar}"/>
+		</classpath>
+	</iajc>
+
+	<!-- Create business components jar file -->
+	<jar jarfile="${jar.home}/${businesscomponentsjar.file}" basedir="${businesscomponents.home}/bin"/>
+</target>
+
+<!-- ==================== Target to compile the EJB Components project ================== -->
+<target name="distEJBComponents" depends="prepare,distCommons,distBusinessUtils,distBusinessComponents" description="Compile Java sources for EJB Components">
+
+    <!-- Compile Java classes as necessary -->
+	<iajc 	srcdir		="src"
+          	destdir		="bin"
+           	debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+
+	<classpath>
+		<path  refid="default.classpath"/>
+		<pathelement location="${jar.home}/${commonsjar.file}"/>
+		<pathelement location="${jar.home}/${businessutilsjar.file}"/>
+		<pathelement location="${jar.home}/${businesscomponentsjar.file}"/>
+			<pathelement location="${aspectj.jar}"/>
+	</classpath>
+	
+	</iajc>
+
+	<jar jarfile="${jar.home}/${ejbcomponentsjar.file}"  basedir="bin"/>
+
+</target>
+
+<!-- ==================== Target to compile the Business Delegates project ================== -->
+<target name="distBusinessDelegates" depends="install" description="Compile Java sources for Business Delegates">
+
+    <!-- Compile Java classes as necessary -->
+	<iajc 	srcdir		="${businessdelegates.home}/src"
+          	destdir		="${businessdelegates.home}/bin"
+           	debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+
+		<classpath>
+			<path  refid="default.classpath"/>
+			<pathelement location="${jar.home}/${commonsjar.file}"/>
+			<pathelement location="${jar.home}/${businessutilsjar.file}"/>
+			<pathelement location="${jar.home}/${businesscomponentsjar.file}"/>
+			<pathelement location="bin"/>
+			<pathelement location="${aspectj.jar}"/>
+		</classpath>
+	</iajc>
+
+	<!-- Create MiddleTier JAR file for the PRESENTATION LAYER -->
+	<jar jarfile="${jar.home}/${businessdelegatesjar.file}"  basedir="${businessdelegates.home}/bin"/>
+
+<!--		<fileset dir="${businesscomponents.home}/bin">
+			<include name="aop/j2ee/business/*.class"/>
+		</fileset>
+	</jar>
+-->
+
+	<jar destfile="${jar.home}/${businessdelegatesjar.file}" update="true">
+		<fileset dir="bin">
+			<include name="aop/j2ee/business/session/bank/BankHome.class"/>
+			<include name="aop/j2ee/business/session/bank/Bank.class"/>
+		</fileset>
+	</jar>
+
+	<jar destfile="${jar.home}/${businessdelegatesjar.file}" update="true">
+		<fileset dir="${businessdelegates.home}/bin">
+			<include name="aop/j2ee/client/delegate/*.class"/>
+		</fileset>
+	</jar>
+
+	<jar destfile="${jar.home}/${businessdelegatesjar.file}" update="true">
+		<fileset dir="${stub.home}">
+			<include name="aop/j2ee/business/*Stub*.class"/>
+		</fileset>
+	</jar>
+		
+</target>
+
+<!-- ==================== Target to compile the Client project ================== -->
+<target name="distClientComponents" depends="distBusinessDelegates" description="Compile Java sources for Client Components">
+
+    <!-- Compile Client Utiltity classes as necessary 
+       
+	<iajc 	srcdir		="${applicationclientutils.home}/src"
+          	destdir		="${applicationclientutils.home}/bin"
+           	debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+
+	<classpath>
+		<path  refid="default.classpath"/>
+		<pathelement location="${jar.home}/${commonsjar.file}"/>
+		<pathelement location="${jar.home}/${businessdelegatesjar.file}"/>
+			<pathelement location="${aspectj.jar}"/>
+	</classpath>
+	
+	</iajc>
+-->
+
+    <!-- Compile Client classes as necessary -->
+	<iajc 	srcdir		="${applicationclient.home}/src"
+          	destdir		="${applicationclient.home}/bin"
+           	debug		="${compile.debug}"
+      		deprecation	="${compile.deprecation}">
+
+	<classpath>
+		<path  refid="default.classpath"/>
+		<pathelement location="${jar.home}/${commonsjar.file}"/>
+		<pathelement location="${applicationclientutils.home}/bin"/>
+		<pathelement location="${jar.home}/${businessdelegatesjar.file}"/>
+			<pathelement location="${aspectj.jar}"/>
+	</classpath>
+	
+	</iajc>
+
+	<!-- Create Client JAR file with Utility components for the PRESENTATION LAYER -->
+	<jar destfile="${clientjar.home}/${applicationclientjar.file}" manifest="${clientmanifest.file}">
+		<fileset dir="${applicationclientutils.home}/bin">
+			<include name="**"/>
+		</fileset>
+	</jar>
+
+	<!-- Update Client JAR file with the PRESENTATION LAYER Components -->
+	<jar destfile="${clientjar.home}/${applicationclientjar.file}" update="true">
+		<fileset dir="${applicationclient.home}/bin">
+			<include name="**"/>
+		</fileset>
+	</jar>
+
+	<!-- Copy the client-side JARs -->
+    <copy file="${log4jjar.file}" todir="${clientjar.home}"/>
+    <copy file="${appserverextjar.file}" todir="${clientjar.home}"/>
+    <copy todir="${clientjar.home}">
+		<fileset dir="${jar.home}" includes="${commonsjar.file},${businessdelegatesjar.file}" /> 
+	</copy>	
+	
+</target>
+
+<!-- ==================== Dist Target ===================================== -->
+<target name="dist" depends="distEJBComponents" description="Create binary distribution">
+
+	<!-- Create EJB JAR file -->
+	<jar destfile="${ear.home}/${ejbjar.file}" manifest="${ejbmanifest.file}">
+		<fileset dir="bin"/>
+		<fileset dir=".">
+			<include name="META-INF/ejb-jar.xml"/>
+			<include name="META-INF/sun-ejb-jar.xml"/>
+			<!--<include name="META-INF/txcontroller-ejb.xml"/>
+			<include name="META-INF/txcontroller-sun-ejb.xml"/>
+			<include name="META-INF/bank-ejb.xml"/>
+			<include name="META-INF/bank-sun-ejb.xml"/>
+			<include name="META-INF/tx-ejb.xml"/>
+			<include name="META-INF/tx-sun-ejb.xml"/>
+			<include name="META-INF/customer-ejb.xml"/>
+			<include name="META-INF/customer-sun-ejb.xml"/>
+			<include name="META-INF/account-ejb.xml"/>
+			<include name="META-INF/account-sun-ejb.xml"/> -->
+		</fileset>
+	</jar>
+
+    <!-- Copy the application XML file amd the Sun ONE application XML file -->
+    <copy todir="${ear.home}/META-INF">
+		<fileset dir="../applicationdescriptor" includes="application.xml,sun-application.xml" /> 
+	</copy>
+
+	<!-- Copy the dependent JARs -->
+    <copy todir="${ear.home}">
+		<fileset dir="${jar.home}" includes="${commonsjar.file},${businessutilsjar.file},${businesscomponentsjar.file}" /> 
+	</copy>
+
+	<!-- Create EAR file and place in ear directory -->
+	<jar jarfile="${ear.home}/${ear.file}" basedir="${ear.home}" />
+   
+</target>
+
+<!-- ==================== All Target ====================================== -->
+<target name="all" depends="clean,dist" description="Clean directories,then compile and make a distribution"/>
+
+<!-- ==================== Install Target ================================== -->
+<target name="install" depends="all" description="Install application to Application Server">
+
+	<echo message="Deploying ${ear.home}/${ear.file}.... ${sunone.instance}:${deployserver.home}"/>
+
+	<!-- Deploy the beast  -->
+	<sun-appserv-deploy	file="${ear.home}/${ear.file}" 
+    	  			name="${app.name}"
+      				type="${app.type}"
+      				force="true"
+      				upload="true"
+      				user="${admin.user}" 
+      				password="${admin.password}" 
+	      			host="${admin.host}" 
+    	  			port="${admin.port}" 
+      				instance="${sunone.instance}" 
+      				sunonehome="${deployserver.home}" 
+	/>
+</target>
+
+<!-- ==================== Remove Target =================================== -->
+<target name="remove" description="Remove application on Application Server">
+
+	<echo message="Removing ${ear.home}/${ear.file}...."/>
+
+	<!-- Uninstall the beast  -->
+	<sun-appserv-undeploy 	file="${ear.home}/${ear.file}" 
+      				name="${app.name}"
+      				type="${app.type}"
+      				user="${admin.user}" 
+      				password="${admin.password}" 
+      				host="${admin.host}" 
+      				port="${admin.port}" 
+      				instance="${sunone.instance}" 
+      				sunonehome="${appserver.home}" 
+	/>
+</target>
+
+</project>
