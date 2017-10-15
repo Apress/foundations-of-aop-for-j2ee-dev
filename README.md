@@ -1,6 +1,6 @@
 # Apress Source Code
 
-This repository accompanies [*Foundations of AOP for J2EE Development*](http://www.apress.com/9781590595077) by Lionel Seinturier and Renaud Pawlak (Apress, 2005).
+This repository accompanies [*Foundations of AOP for J2EE Development*](http://www.apress.com/9781590595077) by Renaud Pawlak, Lionel Seinturier, and Jean-Philippe Retaillé  (Apress, 2005).
 
 ![Cover image](9781590595077.jpg)
 
